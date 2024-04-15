@@ -50,7 +50,6 @@ mod geogram_ffi {
         /// - `p` point to test
         ///
         /// ### Return values
-        ///
         /// * `+1` - if `p` is inside the circum-circle of `a`, `b`, `c`
         /// * `-1` - if `p` is outside the circum-circle of `a`, `b`, `c`
         /// * `perturb()` - if `p` is exactly on the circum-circle of the triangle `a`, `b`, `c`, where `perturb()` denotes a globally consistent perturbation, that returns either `+1` or `-1`
@@ -83,7 +82,6 @@ mod geogram_ffi {
         /// - `p` point to test
         ///
         /// ### Return values
-        ///
         /// * `+1` - if `p` is inside the circum-sphere of `a`, `b`, `c`, `d`
         /// * `-1` - if `p` is outside the circum-sphere of `a`, `b`, `c`, `d`
         /// * `perturb()` - if `p` is exactly on the circum-sphere of the tetrahedron `a`, `b`, `c`, `d`, where `perturb()` denotes a globally consistent perturbation, that returns either `+1` or `-1`
@@ -121,7 +119,6 @@ mod geogram_ffi {
         /// - `a`, `b`, `c` vertices of the triangle
         ///
         /// ### Return values
-        ///
         /// * `+1` - if the triangle is oriented counter-clockwise
         /// * `0` - if the triangle is flat
         /// * `-1` - if the triangle is oriented clockwise
@@ -155,7 +152,6 @@ mod geogram_ffi {
         /// - `h_d` the height of the lifted point `p`
         ///
         /// ### Return values
-        ///
         /// - `+1` - if p3' lies below the plane
         /// - `-1` - if p3' lies above the plane
         /// - perturb()	- if `p'` lies exactly on the hyperplane, where perturb() denotes a globally consistent perturbation, that returns either `+1` or `-1`
@@ -211,7 +207,6 @@ mod geogram_ffi {
         /// - `a`, `b`, `c`, `d` vertices of the tetrahedron
         ///
         /// ### Return values
-        ///
         /// * `+1` - if the tetrahedron is oriented positively
         /// * `0` - if the tetrahedron is flat
         /// * `-1` - if the tetrahedron is oriented negatively
@@ -247,7 +242,6 @@ mod geogram_ffi {
         /// - `h_p` the height of the lifted point `p'`
         ///
         /// ### Return values
-        ///
         /// - `+1` - if `p'` lies below the plane
         /// - `-1` - if `p'` lies above the plane
         /// - perturb()	- if `p'` lies exactly on the hyperplane, where perturb() denotes a globally consistent perturbation, that returns either `+1` or `-1`
@@ -298,43 +292,43 @@ mod geogram_ffi {
         ) -> i16;
 
         /// Tests whether two 2d points are identical.
-        /// 
+        ///
         /// ### Parameters
         /// - `p1` first point
         /// - `p2` second point
-        /// 
+        ///
         /// ### Return values
         /// - `true` - if `p1` and `p2` have exactly the same coordinates
         /// - `false` - otherwise
-        /// 
+        ///
         /// # Example
         /// ```
         /// use geogram_predicates as gp;
-        /// 
+        ///
         /// let p1 = [4.0, 2.0];
         /// let p2 = [4.0, 2.0];
-        /// 
+        ///
         /// assert!(gp::points_are_identical_2d(&p1, &p2));
         /// ```
         fn points_are_identical_2d(p1: &[f64; 2], p2: &[f64; 2]) -> bool;
 
         /// Tests whether two 3d points are identical.
-        /// 
+        ///
         /// ### Parameters
         /// - `p1` first point
         /// - `p2` second point
-        /// 
+        ///
         /// ### Return values
         /// - `true` - if `p1` and `p2` have exactly the same coordinates
         /// - `false` - otherwise
-        /// 
+        ///
         /// # Example
         /// ```
         /// use geogram_predicates as gp;
-        /// 
+        ///
         /// let p1 = [4.0, 2.0, 0.42];
         /// let p2 = [4.0, 2.0, 0.42];
-        /// 
+        ///
         /// assert!(gp::points_are_identical_3d(&p1, &p2));
         /// ```
         fn points_are_identical_3d(p1: &[f64; 3], p2: &[f64; 3]) -> bool;
