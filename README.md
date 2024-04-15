@@ -2,7 +2,7 @@
 A crate for rust interoperability with `geogram`s _robust predicates_; via `cxx`.
 
 Geogram is a scientifically proven, well-documented, feature-rich geometry processing library, which leverages _"[...] arithmetic filters (Meyer and Pion), expansion arithmetics (Shewchuk) and simulation of simplicity (Edelsbrunner)."_ <br>
-Be sure to check it out [here](https://github.com/dtolnay/https://github.com/BrunoLevy/geogram).
+Be sure to check it out [here](https://github.com/BrunoLevy/geogram).
 
 It yields easy access to dependecy-free parts of its code base, as so called _Pluggable Software Modules_ (PSM), which in turn make it easy to write `cxx_bridges` for these.
 
