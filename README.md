@@ -32,24 +32,6 @@ assert_eq!(-1, is_in_circle_p_out);
 // ...
 ```
 
-## Design
-The API to the `geogram predicates` is designed with the following design principles in mind:
-- **Relation to geogram**: the _function names_, _signatures_ and _doc strings_ should be as close as possible to the original. This keeps maintaining, updating and comparing as simple as possible
-
-## Contribution
-If you see something as
-- a missing geogram predicate,
-- software desing principles that could be improved,
-- potential bugs,
-- ambiguous documentation, typos etc.,
-- ...
-
-feel free to open a PR to address this.
-
-## Acknowledgements
-Credits go to [geogram](https://github.com/BrunoLevy/geogram)
- and [cxx](https://github.com/dtolnay/cxx), which make this project possible.
-
 ## List of currently supported predicates
 ### 2D
 - [x] in_circle_2D_SOS()
@@ -68,6 +50,24 @@ Credits go to [geogram](https://github.com/BrunoLevy/geogram)
 - [x] geo_sgn()
 
 There are a lot of predictes still to be implemented. If you are in need for a specific one have a look at the [geograms predicate list](https://brunolevy.github.io/geogram/predicates_8h.html). The bridge for any one predicate is implemented pretty quickly, so this crate is easily extendable.
+
+## Design
+The API to the `geogram predicates` is designed with the following design principles in mind:
+- **Relation to geogram**: the _function names_, _signatures_ and _doc strings_ should be as close as possible to the original. This keeps maintaining, updating and comparing as simple as possible
+
+## Contribution
+If you see something as
+- a missing geogram predicate,
+- software desing principles that could be improved,
+- potential bugs,
+- ambiguous documentation, typos etc.,
+- ...
+
+feel free to open a PR to address this.
+
+## Acknowledgements
+Credits go to [geogram](https://github.com/BrunoLevy/geogram)
+ and [cxx](https://github.com/dtolnay/cxx), which make this project possible.
 
 ## License
 The files in `include/geogram_predicates_psm` are licensed w.r.t.
