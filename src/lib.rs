@@ -304,7 +304,7 @@ mod geogram_ffi {
         /// - `p2` second point
         /// 
         /// ### Return values
-        /// - `true` - if the points have exactly the same coordinates
+        /// - `true` - if `p1` and `p2` have exactly the same coordinates
         /// - `false` - otherwise
         /// 
         /// # Example
@@ -317,5 +317,26 @@ mod geogram_ffi {
         /// assert!(gp::points_are_identical_2d(&p1, &p2));
         /// ```
         fn points_are_identical_2d(p1: &[f64; 2], p2: &[f64; 2]) -> bool;
+
+        /// Tests whether two 3d points are identical.
+        /// 
+        /// ### Parameters
+        /// - `p1` first point
+        /// - `p2` second point
+        /// 
+        /// ### Return values
+        /// - `true` - if `p1` and `p2` have exactly the same coordinates
+        /// - `false` - otherwise
+        /// 
+        /// # Example
+        /// ```
+        /// use geogram_predicates as gp;
+        /// 
+        /// let p1 = [4.0, 2.0, 0.42];
+        /// let p2 = [4.0, 2.0, 0.42];
+        /// 
+        /// assert!(gp::points_are_identical_3d(&p1, &p2));
+        /// ```
+        fn points_are_identical_3d(p1: &[f64; 3], p2: &[f64; 3]) -> bool;
     }
 }

@@ -47,4 +47,8 @@ bool points_are_identical_2d(const ::std::array<double, 2> &p1, const ::std::arr
     return GEO::PCK::points_are_identical_2d(p1.data(), p2.data());
 }
 
+bool points_are_identical_3d(const ::std::array<double, 3> &p1, const ::std::array<double, 3> &p2) {
+    return GEO::PCK::points_are_identical_3d(p1.data(), p2.data());
+}
+
 } // namespace GEOGRAM
