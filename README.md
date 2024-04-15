@@ -47,7 +47,7 @@ If you see something as
 feel free to open a PR to address this.
 
 ## Acknowledgements
-Credits go to [geogram](https://github.com/dtolnay/https://github.com/BrunoLevy/geogram)
+Credits go to [geogram](https://github.com/BrunoLevy/geogram)
  and [cxx](https://github.com/dtolnay/cxx), which make this project possible.
 
 ## List of currently supported predicates
