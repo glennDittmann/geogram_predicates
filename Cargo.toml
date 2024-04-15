@@ -2,9 +2,11 @@
 name = "geogram_predicates"
 description = "Rust bindings to the Geogram library's predicates module"
 version = "0.1.0"
+repository = "https://github.com/glennDittmann/geogram_predicates"
 authors = ["Glenn Dittmann"]
 edition = "2021"
 license = "Apache-2.0"
+keywords = ["computer graphics", "math", "geogram", "geometry", "predicates", "robust", "triangulation"]
 
 [dependencies]
 cxx = "1.0"
