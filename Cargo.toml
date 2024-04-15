@@ -6,7 +6,7 @@ repository = "https://github.com/glennDittmann/geogram_predicates"
 authors = ["Glenn Dittmann"]
 edition = "2021"
 license = "Apache-2.0"
-keywords = ["computer graphics", "math", "geogram", "geometry", "predicates", "robust", "triangulation"]
+keywords = ["computer graphics", "math", "geometry", "predicates", "robust"]
 
 [dependencies]
 cxx = "1.0"
