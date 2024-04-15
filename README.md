@@ -52,14 +52,17 @@ Credits go to [geogram](https://github.com/BrunoLevy/geogram)
 
 ## List of currently supported predicates
 ### 2D
-- [x] orient_2d
-- [x] orient_2dlifted_SOS
 - [x] in_circle_2D_SOS()
+- [x] orient_2d()
+- [x] orient_2dlifted_SOS()
+- [x] points_are_identical_2d()
+
 
 ### 3D
-- [x] orient_3d
-- [x] orient_3dlifted_SOS
-- [x] in_sphere_3d_SOS
+- [x] in_sphere_3d_SOS()
+- [x] orient_3d()
+- [x] orient_3dlifted_SOS()
+- [x] points_are_identical_3d()
 
 ### Other
 - [x] geo_sgn()
