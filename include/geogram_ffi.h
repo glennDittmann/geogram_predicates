@@ -12,5 +12,5 @@ int16_t orient_2d(const ::std::array<double, 2> &a, const  ::std::array<double, 
 int16_t orient_2dlifted_SOS(const ::std::array<double, 2> &a, const ::std::array<double, 2> &b, const ::std::array<double, 2> &c, const ::std::array<double, 2> &p, double h_a, double h_b, double h_c, double h_p);
 int16_t orient_3d(const ::std::array<double, 3> &a, const  ::std::array<double, 3> &b, const ::std::array<double, 3> &c, const ::std::array<double, 3> &d);
 int16_t orient_3dlifted_SOS(const ::std::array<double, 3> &a, const ::std::array<double, 3> &b, const ::std::array<double, 3> &c, const ::std::array<double, 3> &d, const ::std::array<double, 3> &p, double h_a, double h_b, double h_c, double h_d, double h_p);
-
+bool points_are_identical_2d(const ::std::array<double, 2> &p1, const ::std::array<double, 2> &p2);
 } // namespace GEOGRAM

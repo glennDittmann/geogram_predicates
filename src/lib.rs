@@ -296,5 +296,26 @@ mod geogram_ffi {
             h_d: f64,
             h_p: f64,
         ) -> i16;
+
+        /// Tests whether two 2d points are identical.
+        /// 
+        /// ### Parameters
+        /// - `p1` first point
+        /// - `p2` second point
+        /// 
+        /// ### Return values
+        /// - `true` - if the points have exactly the same coordinates
+        /// - `false` - otherwise
+        /// 
+        /// # Example
+        /// ```
+        /// use geogram_predicates as gp;
+        /// 
+        /// let p1 = [4.0, 2.0];
+        /// let p2 = [4.0, 2.0];
+        /// 
+        /// assert!(gp::points_are_identical_2d(&p1, &p2));
+        /// ```
+        fn points_are_identical_2d(p1: &[f64; 2], p2: &[f64; 2]) -> bool;
     }
 }
