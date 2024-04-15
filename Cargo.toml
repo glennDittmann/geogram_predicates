@@ -1,0 +1,13 @@
+[package]
+name = "geogram_predicates"
+description = "Rust bindings to the Geogram library's predicates module"
+version = "0.1.0"
+authors = ["Glenn Dittmann"]
+edition = "2021"
+license = "Apache-2.0"
+
+[dependencies]
+cxx = "1.0"
+
+[build-dependencies]
+cxx-build = "1.0"
