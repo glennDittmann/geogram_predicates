@@ -48,6 +48,8 @@ assert_eq!(-1, is_in_circle_p_out);
 
 ### Other
 - [x] geo_sgn()
+- [x] initialize()
+- [x] terminate()
 
 There are a lot of predictes still to be implemented. If you are in need for a specific one have a look at the [geograms predicate list](https://brunolevy.github.io/geogram/predicates_8h.html). The bridge for any one predicate is implemented pretty quickly, so this crate is easily extendable.
 
