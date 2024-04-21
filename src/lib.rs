@@ -111,6 +111,9 @@ mod geogram_ffi {
             p: &[f64; 3],
         ) -> i16;
 
+        /// Needs to be called before using any predicate.
+        fn initialize();
+
         /// Computes the orientation predicate in 2d.
         ///
         /// Computes the sign of the signed area of the triangle `a`, `b`, `c`.
@@ -332,5 +335,8 @@ mod geogram_ffi {
         /// assert!(gp::points_are_identical_3d(&p1, &p2));
         /// ```
         fn points_are_identical_3d(p1: &[f64; 3], p2: &[f64; 3]) -> bool;
+
+        /// Needs to be called at the end of the program.
+        fn terminate();
     }
 }

@@ -23,6 +23,10 @@ int16_t in_sphere_3d_SOS(const ::std::array<double, 3> &a, const ::std::array<do
     return is_in;
 }
 
+void initialize() {
+    GEO::PCK::initialize();
+}
+
 int16_t orient_2d(const ::std::array<double, 2> &a, const ::std::array<double, 2> &b, const ::std::array<double, 2> &c) {
     GEO::Sign orientation = GEO::PCK::orient_2d(a.data(), b.data(), c.data());
     return orientation;
@@ -49,6 +53,10 @@ bool points_are_identical_2d(const ::std::array<double, 2> &p1, const ::std::arr
 
 bool points_are_identical_3d(const ::std::array<double, 3> &p1, const ::std::array<double, 3> &p2) {
     return GEO::PCK::points_are_identical_3d(p1.data(), p2.data());
+}
+
+void terminate() {
+    GEO::PCK::terminate();
 }
 
 } // namespace GEOGRAM
