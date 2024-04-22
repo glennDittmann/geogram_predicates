@@ -36,9 +36,10 @@ assert_eq!(-1, is_in_circle_p_out);
 
 Below are visualizations comparing naive and robust `orient_2d` implementations. You can generate these images yourself by running the [`examples/orient_2d/`](examples/orient_2d/).
 
-|            | Naive                   | Robust                   |
-|------------|-------------------------|--------------------------|
-| `orient_2d`| ![Orient 2d naive](images/out_naive_orient_2d.png)| ![Orient 2d robust](images/out_robust_orient_2d.png) |
+|               | Naive                                                   | Robust                                                     |
+|---------------|---------------------------------------------------------|------------------------------------------------------------|
+| `orient_2d`   | ![Orient 2d naive](images/out_naive_orient_2d.png)      | ![Orient 2d robust](images/out_robust_orient_2d.png)       |
+| `in_circle_2d`| ![In circle 2d naive](images/out_naive_in_circle_2d.png)| ![In circle 2d robust](images/out_robust_in_circle_2d.png) |
 
 ## List of currently supported predicates
 ### 2D
