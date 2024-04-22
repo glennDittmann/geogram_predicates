@@ -81,7 +81,7 @@ feel free to open a PR to address this.
 Credits go to [geogram](https://github.com/BrunoLevy/geogram)
  and [cxx](https://github.com/dtolnay/cxx), which make this project possible.
 
-Also [georust/robust](https://github.com/georust/robust) should be mentioned, for helping set up example with visualizations.
+Also [georust/robust](https://github.com/georust/robust) should be mentioned, for helping set up the examples and their visualizations.
 
 ## License
 The files in `include/geogram_predicates_psm` are licensed w.r.t.
