@@ -55,6 +55,10 @@ bool points_are_identical_3d(const ::std::array<double, 3> &p1, const ::std::arr
     return GEO::PCK::points_are_identical_3d(p1.data(), p2.data());
 }
 
+void show_stats() {
+    GEO::PCK::show_stats();
+}
+
 void terminate() {
     GEO::PCK::terminate();
 }

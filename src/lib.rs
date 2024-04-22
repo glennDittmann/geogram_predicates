@@ -336,6 +336,9 @@ mod geogram_ffi {
         /// ```
         fn points_are_identical_3d(p1: &[f64; 3], p2: &[f64; 3]) -> bool;
 
+        /// Displays some statistics about predicates, including the number of calls, the number of exact arithmetics calls, and the number of Simulation of Simplicity calls.
+        fn show_stats();
+
         /// Needs to be called at the end of the program.
         fn terminate();
     }
