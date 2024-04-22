@@ -34,7 +34,7 @@ assert_eq!(-1, is_in_circle_p_out);
 
 ## Visualizing Advantages of Robust Predicates
 
-Below are visualizations comparing naive and robust `orient_2d` implementations. You can generate these images yourself by running the [`examples/orient_2d/`](examples/orient2d/).
+Below are visualizations comparing naive and robust `orient_2d` implementations. You can generate these images yourself by running the [`examples/orient_2d/`](examples/orient_2d/).
 
 |            | Naive                   | Robust                   |
 |------------|-------------------------|--------------------------|
