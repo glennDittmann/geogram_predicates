@@ -32,6 +32,14 @@ assert_eq!(-1, is_in_circle_p_out);
 // ...
 ```
 
+## Visualizing Advantages of Robust Predicates
+
+Below are visualizations comparing naive and robust `orient_2d` implementations. You can generate these images yourself by running the [`examples/orient_2d/`](examples/orient2d/).
+
+|            | Naive                   | Robust                   |
+|------------|-------------------------|--------------------------|
+| `orient_2d`| ![Orient 2d naive](images/out_naive_orient_2d.png)| ![Orient 2d robust](images/out_robust_orient_2d.png) |
+
 ## List of currently supported predicates
 ### 2D
 - [x] in_circle_2D_SOS()
@@ -49,6 +57,7 @@ assert_eq!(-1, is_in_circle_p_out);
 ### Other
 - [x] geo_sgn()
 - [x] initialize()
+- [x] show_stats()
 - [x] terminate()
 
 There are a lot of predictes still to be implemented. If you are in need for a specific one have a look at the [geograms predicate list](https://brunolevy.github.io/geogram/predicates_8h.html). The bridge for any one predicate is implemented pretty quickly, so this crate is easily extendable.
@@ -70,6 +79,8 @@ feel free to open a PR to address this.
 ## Acknowledgements
 Credits go to [geogram](https://github.com/BrunoLevy/geogram)
  and [cxx](https://github.com/dtolnay/cxx), which make this project possible.
+
+Also [georust/robust](https://github.com/georust/robust) should be mentioned, for helping set up example with visualizations.
 
 ## License
 The files in `include/geogram_predicates_psm` are licensed w.r.t.
