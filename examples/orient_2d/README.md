@@ -5,7 +5,7 @@ cargo run --example orient_2d naive
 cargo run --example orient_2d robust
 ```
 
-This will save the output in `out_{naive, robust}_orient_2d.png`. Or see the pre-computed examples in [`images/`](images/).
+This will save the output in `out_{naive, robust}_orient_2d.png`. Or see the pre-computed examples in [`images/`](../../images/).
 
 # Idea
 
