@@ -119,7 +119,7 @@ dependencies = [
 
 [[package]]
 name = "geogram_predicates"
-version = "0.1.3"
+version = "0.1.5"
 dependencies = [
  "cxx",
  "cxx-build",
