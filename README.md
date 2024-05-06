@@ -57,6 +57,7 @@ Below are visualizations comparing naive and robust `orient_2d` & `in_circle_2d`
 - [x] points_are_identical_3d()
 
 ### Other
+- [x] det_4d()
 - [x] geo_sgn()
 - [x] initialize()
 - [x] show_stats()

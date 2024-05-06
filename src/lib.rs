@@ -17,26 +17,49 @@ mod geogram_ffi {
         include!("geogram_predicates/include/geogram_ffi.h");
 
         /// Computes the sign of the determinant of a 3x3 matrix formed by three 3D points.
-        /// 
+        ///
         /// ### Parameters
         /// - `a`, `b`, `c` the three points that form the matrix
-        /// 
+        ///
         /// ### Returns
         /// - the sign of the determinant of the matrix
-        /// 
+        ///
         /// # Example
         /// ```
         /// use geogram_predicates as gp;
-        /// 
+        ///
         /// // Define three points that form a matrix
         /// let a = [1.0, 2.0, 3.0];
         /// let b = [4.0, 5.0, 6.0];
         /// let c = [7.0, 8.0, 9.0];
-        /// 
+        ///
         /// let det = gp::det_3d(&a, &b, &c);
         /// assert_eq!(det, 0);
         /// ```
         fn det_3d(a: &[f64; 3], b: &[f64; 3], c: &[f64; 3]) -> i16;
+
+        /// Computes the sign of the determinant of a 4x4 matrix formed by four 4D points.
+        ///
+        /// ### Parameters
+        /// - `a`, `b`, `c`, `d` the four points that form the matrix
+        ///
+        /// ### Returns
+        /// - the sign of the determinant of the matrix
+        ///
+        /// # Example
+        /// ```
+        /// use geogram_predicates as gp;
+        ///
+        /// // Define four points that form a matrix
+        /// let a = [1.0, 2.0, 3.0, 4.0];
+        /// let b = [5.0, 6.0, 7.0, 8.0];
+        /// let c = [9.0, 10.0, 11.0, 12.0];
+        /// let d = [13.0, 14.0, 15.0, 16.0];
+        ///
+        /// let det = gp::det_4d(&a, &b, &c, &d);
+        /// assert_eq!(det, 0);
+        /// ```
+        fn det_4d(a: &[f64; 4], b: &[f64; 4], c: &[f64; 4], d: &[f64; 4]) -> i16;
 
         /// Gets the sign of a value.
         ///

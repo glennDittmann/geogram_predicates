@@ -26,7 +26,12 @@ pub fn write_to_png(data: &[Ordering], path: &Path, width: usize, height: usize)
     writer.write_image_data(&data).unwrap();
 }
 
-pub fn predicate_2d_test<F>(predicate: F, start: [f64; 2], width: usize, height: usize) -> Vec<Ordering>
+pub fn predicate_2d_test<F>(
+    predicate: F,
+    start: [f64; 2],
+    width: usize,
+    height: usize,
+) -> Vec<Ordering>
 where
     F: Fn([f64; 2]) -> f64,
 {

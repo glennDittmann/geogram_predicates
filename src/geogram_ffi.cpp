@@ -14,6 +14,11 @@ int16_t det_3d(const ::std::array<double, 3> &a, const ::std::array<double, 3> &
     return det;
 }
 
+int16_t det_4d(const ::std::array<double, 4> &a, const ::std::array<double, 4> &b, const ::std::array<double, 4> &c, const ::std::array<double, 4> &d) {
+    GEO::Sign det = GEO::PCK::det_4d(a.data(), b.data(), c.data(), d.data());
+    return det;
+}
+
 int16_t geo_sgn(double x) {
     return GEO::geo_sgn(x);
 };
