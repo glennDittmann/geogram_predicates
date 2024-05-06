@@ -50,6 +50,7 @@ Below are visualizations comparing naive and robust `orient_2d` & `in_circle_2d`
 
 
 ### 3D
+- [x] det_3d()
 - [x] in_sphere_3d_SOS()
 - [x] orient_3d()
 - [x] orient_3dlifted_SOS()
