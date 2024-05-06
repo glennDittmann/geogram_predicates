@@ -5,6 +5,7 @@
 // Namespace to handle calls into geogram from rust.
 namespace GEOGRAM {
     
+int16_t det_3d(const ::std::array<double, 3> &a, const ::std::array<double, 3> &b, const ::std::array<double, 3> &c);
 int16_t geo_sgn(double x);
 int16_t in_circle_2d_SOS(const ::std::array<double, 2> &a, const ::std::array<double, 2> &b, const ::std::array<double, 2> &c, const ::std::array<double, 2> &p);
 int16_t in_sphere_3d_SOS(const ::std::array<double, 3> &a, const ::std::array<double, 3> &b, const ::std::array<double, 3> &c, const ::std::array<double, 3> &d, const ::std::array<double, 3> &p);
