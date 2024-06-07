@@ -197,7 +197,7 @@ mod geogram_ffi {
         /// - `a` ,`b`, `c`	vertices of the triangle
         /// - `p` point to test
         /// - `h_a` ,`h_b` ,`h_c` the heights of the lifted points, e.g. `a' = a.x**2 + a.y**2 - a.w`
-        /// - `h_d` the height of the lifted point `p`
+        /// - `h_p` the height of the lifted point `p`
         ///
         /// ### Return values
         /// - `+1` - if p3' lies below the plane
@@ -244,7 +244,7 @@ mod geogram_ffi {
             h_a: f64,
             h_b: f64,
             h_c: f64,
-            h_d: f64,
+            h_p: f64,
         ) -> i16;
 
         /// Computes the orientation predicate in 3d.
