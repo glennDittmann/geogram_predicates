@@ -61,6 +61,30 @@ mod geogram_ffi {
         /// ```
         fn det_4d(a: &[f64; 4], b: &[f64; 4], c: &[f64; 4], d: &[f64; 4]) -> i16;
 
+
+
+        /// Computes the sign of the dot product between two vectors.
+        ///
+        /// ### Parameters
+        /// - `a`, `b`, `c`, three 3d points
+        ///
+        /// ### Returns
+        /// - the sign of the dot product between the vectors `ab` and `ac`
+        ///
+        /// # Example
+        /// ```
+        /// use geogram_predicates as gp;
+        /// 
+        /// /// // Define four points that form a matrix
+        /// let a = [0.0, 0.0, 0.0];
+        /// let b = [1.0, 0.0, 0.0];
+        /// let c = [0.0, 1.0, 0.0];
+        ///
+        /// let dot_sign = gp::dot_3d(&a, &b, &c); // should be orthogonal
+        /// assert_eq!(dot_sign, 0);
+        /// ``` 
+        fn dot_3d(a: &[f64; 3], b: &[f64; 3], c: &[f64; 3]) -> i16;
+
         /// Gets the sign of a value.
         ///
         /// ### Parameters
