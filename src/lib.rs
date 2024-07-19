@@ -297,6 +297,32 @@ mod geogram_ffi {
         ///```
         fn orient_3d(a: &[f64; 3], b: &[f64; 3], c: &[f64; 3], d: &[f64; 3]) -> i16;
 
+        /// Computes the (approximate) orientation predicate in 3d.
+        ///
+        /// Computes the sign of the (approximate) signed volume of the tetrahedron `a`, `b`, `c`, `d`.
+        ///
+        /// ### Parameters
+        /// - `a`, `b`, `c`, `d` vertices of the tetrahedron
+        ///
+        /// ### Return values
+        /// * `+1` - if the tetrahedron is oriented positively
+        /// * `0` - if the tetrahedron is flat
+        /// * `-1` - if the tetrahedron is oriented negatively
+        ///
+        /// # Example
+        /// ```
+        /// use geogram_predicates as gp;
+        ///
+        /// // Define four points that form a tetrahedron
+        /// let a = [0.0, 0.0, 0.0];
+        /// let b = [2.0, 0.0, 0.0];
+        /// let c = [0.0, 2.0, 0.0];
+        /// let d = [0.75, 0.75, 1.0];
+        ///
+        /// assert_eq!(1, gp::orient_3d_inexact(&a, &b, &c, &d));
+        ///```
+        fn orient_3d_inexact(a: &[f64; 3], b: &[f64; 3], c: &[f64; 3], d: &[f64; 3]) -> i16;
+
         /// Computes the 4d orientation test with lifted points, i.e the regularity test for 3d.
         ///
         /// Given four lifted points `a'`, `b'`, `c'`, `d'` in R^4, tests if the lifted point `p'` in R^4 lies below or above the hyperplane passing through the four points `a'`, `b'`, `c'`, `d'`.

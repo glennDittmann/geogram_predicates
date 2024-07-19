@@ -57,6 +57,11 @@ int16_t orient_3d(const ::std::array<double, 3> &a, const  ::std::array<double, 
     return orientation;
 }
 
+int16_t orient_3d_inexact(const ::std::array<double, 3> &a, const  ::std::array<double, 3> &b, const ::std::array<double, 3> &c, const ::std::array<double, 3> &d) {
+    GEO::Sign orientation = GEO::PCK::orient_3d_inexact(a.data(), b.data(), c.data(), d.data());
+    return orientation;
+}
+
 int16_t orient_3dlifted_SOS(const ::std::array<double, 3> &a, const ::std::array<double, 3> &b, const ::std::array<double, 3> &c, const ::std::array<double, 3> &d, const ::std::array<double, 3> &p, double h_a, double h_b, double h_c, double h_d, double h_p) {
     GEO::Sign regularity = GEO::PCK::orient_3dlifted_SOS(a.data(), b.data(), c.data(), d.data(), p.data(), h_a, h_b, h_c, h_d, h_p);
     return regularity;
