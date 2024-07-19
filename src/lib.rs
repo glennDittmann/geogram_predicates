@@ -389,6 +389,30 @@ mod geogram_ffi {
             h_p: f64,
         ) -> i16;
 
+        /// Tests whether three 3D points are colinear.
+        ///
+        /// ### Parameters
+        /// - `p1` first point
+        /// - `p2` second point
+        /// - `p3` third point
+        ///
+        /// ### Return values
+        /// - `true` - if `p1`, `p2` and `p3` are colinear
+        /// - `false` - otherwise
+        ///
+        /// # Example
+        /// ```
+        /// use geogram_predicates as gp;
+        ///
+        /// // Define three points on a line
+        /// let p1 = [0.0, 0.0, 0.0];
+        /// let p2 = [0.0, 0.0, 1.0];
+        /// let p3 = [0.0, 0.0, 2.0];
+        ///
+        /// assert!(gp::points_are_colinear_3d(&p1, &p2, &p3));
+        /// ```
+        fn points_are_colinear_3d(p1: &[f64; 3], p2: &[f64; 3], p3: &[f64; 3]) -> bool;
+
         /// Tests whether two 2d points are identical.
         ///
         /// ### Parameters

@@ -56,6 +56,7 @@ Below are visualizations comparing naive and robust `orient_2d` & `in_circle_2d`
 - [x] orient_3d()
 - [x] orient_3d_inexact()
 - [x] orient_3dlifted_SOS()
+- [x] points_are_colinear_3d()
 - [x] points_are_identical_3d()
 
 ### Other

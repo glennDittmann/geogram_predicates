@@ -67,6 +67,10 @@ int16_t orient_3dlifted_SOS(const ::std::array<double, 3> &a, const ::std::array
     return regularity;
 }
 
+bool points_are_colinear_3d(const ::std::array<double, 3> &p1, const ::std::array<double, 3> &p2, const ::std::array<double, 3> &p3) {
+    return GEO::PCK::points_are_colinear_3d(p1.data(), p2.data(), p3.data());
+}
+
 bool points_are_identical_2d(const ::std::array<double, 2> &p1, const ::std::array<double, 2> &p2) {
     return GEO::PCK::points_are_identical_2d(p1.data(), p2.data());
 }
