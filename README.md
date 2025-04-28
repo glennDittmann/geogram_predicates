@@ -82,6 +82,9 @@ If you see something as
 
 feel free to open a PR to address this.
 
+## Full rust port
+`WIP`: native rust availability of geograms robust predicates (porting or reusing `robust`s implementations)
+
 ## Acknowledgements
 Credits go to [geogram](https://github.com/BrunoLevy/geogram)
  and [cxx](https://github.com/dtolnay/cxx), which make this project possible.
