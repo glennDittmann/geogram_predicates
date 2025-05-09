@@ -5,7 +5,7 @@ An interoperability ffi with `geogram`s _robust predicates_; via `cxx` also avai
 <details>
   <summary><h4>Why Geogram</h4></summary>
 
-Geogram is a scientifically proven, well-documented, feature-rich geometry processing library, which leverages _"[...] arithmetic filters (Meyer and Pion), expansion arithmetics (Shewchuk) and simulation of simplicity (Edelsbrunner)."_ <br>
+Geogram is a scientifically proven, well-documented, feature-rich geometry processing library, which leverages _"[...] arithmetic filters (Meyer and Pion), expansion arithmetics (Shewchuk) [1][2] and simulation of simplicity (Edelsbrunner)."_ <br>
 Be sure to check it out [here](https://github.com/BrunoLevy/geogram).
 
 It yields easy access to dependency-free parts of its code base, as so called _Pluggable Software Modules_ (PSM), which in turn make it easy to write `cxx_bridges` for these.
@@ -103,6 +103,11 @@ B.Levy for making the original geogram library.
 Also [georust/robust](https://github.com/georust/robust) should be mentioned, for helping set up the examples, their visualizations, and use in the codebase.
 
 Thanks @BrunoLevy for [appreciating this project](https://x.com/BrunoLevy01/status/1783306804300075379)!
+
+## References
+[1] Shewchuk, Johnathan Richard. "Robust adaptive floating-point geometric predicates." Proceedings of the twelfth annual symposium on Computational geometry. 1996.
+
+[2] Richard Shewchuk, Jonathan. "Adaptive precision floating-point arithmetic and fast robust geometric predicates." Discrete & Computational Geometry 18 (1997): 305-363.
 
 ## License
 The files in `include/geogram_predicates_psm` are licensed w.r.t.
