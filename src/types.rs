@@ -1,6 +1,9 @@
 use core::cmp::Ordering;
 
-/// A helper for functions that return signs
+/// A helper for functions that return signs.
+/// 
+/// Note: Sign's memory layout is `repr(i8)` so it can be freely converted to i8,
+/// and back in some cases like multiply.
 #[derive(PartialEq, Eq, PartialOrd, Ord, Debug, Clone)]
 #[repr(i8)]
 pub enum Sign {
@@ -54,6 +57,8 @@ impl PartialOrd<i8> for Sign {
 impl core::ops::Mul for Sign {
     type Output = Sign;
 
+    // It's more efficient then the safe alternative a match,
+    // as a integer multiply is faster then a 9 branch match.
     #[inline]
     fn mul(self, rhs: Self) -> Self::Output {
         // SAFETY: Sign is repr(i8) and will be (-1, 0, 1) so the product must be (1, 0, -1)

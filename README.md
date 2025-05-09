@@ -11,7 +11,7 @@ Be sure to check it out [here](https://github.com/BrunoLevy/geogram).
 It yields easy access to dependency-free parts of its code base, as so called _Pluggable Software Modules_ (PSM), which in turn make it easy to write `cxx_bridges` for these.
 </details>
 
-This library is licenced under the LGPL-3.0, when the legacy feature is enabled the c++ code it uses is under Apache-2.0.
+This library is licenced under the `LGPL-3.0 OR MIT`, when the legacy feature is enabled the c++ code it uses is under `Apache-2.0`.
 
 ## Example
 
@@ -71,7 +71,7 @@ Below are visualizations comparing naive and robust `orient_2d` & `in_circle_2d`
 
 ### Other
 - [x] det_4d() (not in rust)
-- [x] geo_sgn()
+- [x] geo_sgn() (renamed to geo_sign)
 - [x] initialize() (not in rust)
 - [x] show_stats() (not in rust)
 - [x] terminate() (not in rust)

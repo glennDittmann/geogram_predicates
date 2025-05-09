@@ -24,7 +24,6 @@ impl<const N: usize> fmt::Display for Expansion<N> {
 }
 
 impl<const N: usize> PartialEq for Expansion<N> {
-    // todo check if this should be `self.data == other.data`
     fn eq(&self, other: &Self) -> bool {
         self.equals(other)
     }

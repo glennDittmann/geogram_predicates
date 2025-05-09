@@ -1,7 +1,7 @@
 [workspace]
 members = ["test_utils"]
 exclude = ["fuzz"]
-# 2 so msrv does not hold up dependence versions like in not 3
+# v2 so msrv does not hold up dependence versions like in v3
 resolver = "2"
 
 [package]
@@ -13,7 +13,7 @@ rust-version = "1.85.1"
 
 repository = "https://github.com/glennDittmann/geogram_predicates"
 authors = ["Glenn Dittmann", "TimTheBig"]
-license = "LGPL-3.0"
+license = "LGPL-3.0 OR MIT"
 
 keywords = ["computer-graphics", "math", "geometry", "predicates", "robust"]
 categories = ["no-std::no-alloc", "mathematics", "graphics"]
@@ -29,9 +29,8 @@ cxx = { version = "1.0", features = ["alloc", "c++20"], default-features = false
 cxx-build = { version = "1.0", optional = true }
 
 [dev-dependencies]
-float_extras = "0.1.6"
+float_extras = "0.1"
 test_utils = { path = "test_utils" }
 
 [features]
-alloc = ["cxx?/alloc"]
-legacy = ["dep:cxx", "dep:cxx-build", "alloc"]
+legacy = ["dep:cxx", "dep:cxx-build"]
