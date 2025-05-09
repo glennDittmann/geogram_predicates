@@ -9,14 +9,24 @@ env:
 
 jobs:
   build:
-    
-    runs-on: macos-latest
-    
+    runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v2
-      
+      - uses: actions/checkout@v4
+      - uses: Swatinem/rust-cache@v2
+
       - name: Rustfmt
         run: cargo fmt --all
-      
+
       - name: Test
         run: cargo test
+
+  build-legacy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Test
+        run: cargo test --features legacy

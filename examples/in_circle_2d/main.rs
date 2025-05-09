@@ -1,13 +1,13 @@
 use float_extras::f64::nextafter;
-use geogram_predicates::in_circle_2d_SOS;
-use std::path::Path;
+use geogram_predicates::in_circle_2d_sos;
+use std::{fs, path::Path};
 use test_utils::{predicate_2d_test, write_to_png};
 
 fn main() {
     let args = std::env::args().collect::<Vec<_>>();
 
     if args.len() != 2 {
-        usage(&args[0])
+        usage()
     }
 
     let mode = args[1].as_str();
@@ -19,8 +19,14 @@ fn main() {
 
     let predicate: Box<dyn Fn([f64; 2]) -> f64> = match mode {
         "naive" => Box::new(|p| naive_incircle_2d(&p0, &p1, &p2, &p)),
-        "robust" => Box::new(|p| in_circle_2d_SOS(&p0, &p1, &p2, &p).into()),
-        _ => unimplemented!(),
+        "robust" => Box::new(|p| (in_circle_2d_sos::<true>(&p0, &p1, &p2, &p) as i8).into()),
+        "clean" => {
+            let _ = fs::remove_file("out_naive_orient_2d.png");
+            let _ = fs::remove_file("out_robust_orient_2d.png");
+            println!("example images removed");
+            std::process::exit(1);
+        }
+        "help" | _ => usage(),
     };
 
     let predicate_results = predicate_2d_test(predicate, [0.5, 0.5], 256, 256);
@@ -49,7 +55,17 @@ fn naive_incircle_2d(a: &[f64; 2], b: &[f64; 2], c: &[f64; 2], p: &[f64; 2]) -> 
         * -1.0
 }
 
-fn usage(name: &str) -> ! {
-    eprintln!("Usage: {} {{naive | robust}}", name);
+fn usage() -> ! {
+    eprintln!("
+    Usage:
+        in_circle_2d [option]
+
+        MODES:
+        naive - output an image showing the output of a naive in_circle_2d implementation
+        robust - output an image showing the output of the robust in_circle_2d implementation
+        OTHER:
+        help - show this help message
+        clean - remove the example output images
+    ");
     std::process::exit(1);
 }

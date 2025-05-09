@@ -1,4 +1,5 @@
 fn main() {
+    #[cfg(feature = "legacy")]
     cxx_build::bridge("src/lib.rs")
         .file("src/geogram_ffi.cpp")
         .file("include/geogram_predicates_psm/Predicates_psm.cpp") // we need to add the ..._psm.cpp to the compile list, just as when compiling in c++

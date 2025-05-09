@@ -1,7 +1,10 @@
 /target
 /dist
-*.txt
-.DS_Store
 rust-analyzer
 
+*.txt
 .vscode/
+# tip: on mac put '.DS_Store' in your global gitignore
+.DS_Store
+
+out_*_orient_2d.png
