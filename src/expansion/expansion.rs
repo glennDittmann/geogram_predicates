@@ -258,7 +258,9 @@ impl From<f64> for Expansion<1> {
         e.data.push(a).expect("the len is 1 so this will fit");
         #[cfg(not(debug_assertions))]
         // SAFETY: the len is 1 so this will fit
-        unsafe { e.data.push_unchecked(a); }
+        unsafe {
+            e.data.push_unchecked(a);
+        }
         e
     }
 }
@@ -292,8 +294,14 @@ impl<const N: usize> TryFrom<&[f64]> for Expansion<N> {
 
 impl<const N: usize> Expansion<N> {
     /// Compute capacity needed to multiply two expansions a and b.
-    pub(crate) fn product_capacity<const AN: usize, const BN: usize>(a: &Expansion<AN>, b: &Expansion<BN>) -> usize {
-        a.length().saturating_mul(b.length()).saturating_mul(2).max(1)
+    pub(crate) fn product_capacity<const AN: usize, const BN: usize>(
+        a: &Expansion<AN>,
+        b: &Expansion<BN>,
+    ) -> usize {
+        a.length()
+            .saturating_mul(b.length())
+            .saturating_mul(2)
+            .max(1)
     }
 
     /// Assign `self` = a + b (expansion sum).
@@ -443,8 +451,10 @@ impl<const N: usize> Expansion<N> {
     /// Compute the capacity needed to form the 2×2 determinant
     /// of the four expansions a11, a12, a21, a22.
     pub(crate) fn det2x2_capacity(
-        a11: &Expansion<N>, a12: &Expansion<N>,
-        a21: &Expansion<N>, a22: &Expansion<N>,
+        a11: &Expansion<N>,
+        a12: &Expansion<N>,
+        a21: &Expansion<N>,
+        a22: &Expansion<N>,
     ) -> usize {
         Self::product_capacity(a11, a22) + Self::product_capacity(a21, a12)
     }
@@ -456,10 +466,14 @@ impl<const N: usize> Expansion<N> {
     /// Panics if `self.capacity()` is less than `det2x2_capacity(...)`.
     pub(crate) fn assign_det2x2<const IN_N: usize>(
         &mut self,
-        a11: &Expansion<IN_N>, a12: &Expansion<IN_N>,
-        a21: &Expansion<IN_N>, a22: &Expansion<IN_N>,
+        a11: &Expansion<IN_N>,
+        a12: &Expansion<IN_N>,
+        a21: &Expansion<IN_N>,
+        a22: &Expansion<IN_N>,
     ) -> &mut Expansion<N> {
-        const { assert!(N > 1, "N must be greater then 1"); }
+        const {
+            assert!(N > 1, "N must be greater then 1");
+        }
 
         // build product a11 * a22
         let mut p1: Expansion<N> = Expansion::new();
@@ -512,7 +526,8 @@ impl<const N: usize> core::ops::Add for Expansion<N> {
     type Output = Expansion<N>;
 
     fn add(self, rhs: Self) -> Self::Output {
-        let mut prod: Expansion<N> = Expansion::with_capacity(Expansion::<N>::product_capacity(&self, &rhs));
+        let mut prod: Expansion<N> =
+            Expansion::with_capacity(Expansion::<N>::product_capacity(&self, &rhs));
         prod.assign_product(&self, &rhs);
         prod
     }
@@ -525,7 +540,8 @@ impl<const N: usize> core::ops::Mul for Expansion<N> {
 
     fn mul(self, rhs: Expansion<N>) -> Self::Output {
         // todo when generic_const_exprs is stabe Expansion<{SN.max(RN)}>
-        let mut prod: Expansion<N> = Expansion::with_capacity(Expansion::<N>::product_capacity(&self, &rhs));
+        let mut prod: Expansion<N> =
+            Expansion::with_capacity(Expansion::<N>::product_capacity(&self, &rhs));
         prod.assign_product(&self, &rhs);
         prod
     }

@@ -56,7 +56,8 @@ fn naive_incircle_2d(a: &[f64; 2], b: &[f64; 2], c: &[f64; 2], p: &[f64; 2]) -> 
 }
 
 fn usage() -> ! {
-    eprintln!("
+    eprintln!(
+        "
     Usage:
         in_circle_2d [option]
 
@@ -66,6 +67,7 @@ fn usage() -> ! {
         OTHER:
         help - show this help message
         clean - remove the example output images
-    ");
+    "
+    );
     std::process::exit(1);
 }

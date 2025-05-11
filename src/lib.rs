@@ -5,7 +5,6 @@
 //!
 //! All functions are in written in Rust, except for `det_3d` and `det_4d` which are only available in `legacy`.
 #![no_std]
-
 #![warn(clippy::all, unused, clippy::missing_const_for_fn)]
 
 #[cfg(test)]
@@ -202,7 +201,12 @@ pub fn dot_3d(a: &Point3d, b: &Point3d, c: &Point3d) -> bool {
 /// # assert_eq!(Sign::Negative, is_in_circle_p_out);
 /// ```
 #[must_use]
-pub fn in_circle_2d_sos<const PERTURB: bool>(a: &Point2d, b: &Point2d, c: &Point2d, p: &Point2d) -> Sign {
+pub fn in_circle_2d_sos<const PERTURB: bool>(
+    a: &Point2d,
+    b: &Point2d,
+    c: &Point2d,
+    p: &Point2d,
+) -> Sign {
     let incircle = robust::incircle(
         unsafe { core::mem::transmute::<Point2d, Coord<f64>>(*a) },
         unsafe { core::mem::transmute::<Point2d, Coord<f64>>(*b) },
@@ -215,7 +219,13 @@ pub fn in_circle_2d_sos<const PERTURB: bool>(a: &Point2d, b: &Point2d, c: &Point
     } else if incircle < 0.0 {
         Sign::Negative
     } else {
-        const { if PERTURB { Sign::Positive } else { Sign::Negative } }
+        const {
+            if PERTURB {
+                Sign::Positive
+            } else {
+                Sign::Negative
+            }
+        }
     }
 }
 
@@ -290,7 +300,13 @@ pub fn in_sphere_3d_sos<const PERTURB: bool>(
     } else if insphere < 0.0 {
         Sign::Negative
     } else {
-        const { if PERTURB { Sign::Positive } else { Sign::Negative } }
+        const {
+            if PERTURB {
+                Sign::Positive
+            } else {
+                Sign::Negative
+            }
+        }
     }
 }
 
@@ -483,9 +499,9 @@ pub fn points_are_colinear_3d(p1: &[f64; 3], p2: &[f64; 3], p3: &[f64; 3]) -> bo
     const Q100: [f64; 3] = [1.0, 0.0, 0.0];
 
     orient_3d(p1, p2, p3, &Q000) == 0
-    && orient_3d(p1, p2, p3, &Q001) == 0
-    && orient_3d(p1, p2, p3, &Q010) == 0
-    && orient_3d(p1, p2, p3, &Q100) == 0
+        && orient_3d(p1, p2, p3, &Q001) == 0
+        && orient_3d(p1, p2, p3, &Q010) == 0
+        && orient_3d(p1, p2, p3, &Q100) == 0
 }
 
 /// Tests whether two 2d points are identical.
@@ -572,11 +588,7 @@ pub const fn orient_3d_inexact(a: &Point3d, b: &Point3d, c: &Point3d, d: &Point3
     let a32 = d[1] - a[1];
     let a33 = d[2] - a[2];
 
-    let delta =  det3x3(
-        [a11, a12, a13],
-        [a21, a22, a23],
-        [a31, a32, a33],
-    );
+    let delta = det3x3([a11, a12, a13], [a21, a22, a23], [a31, a32, a33]);
 
     geo_sign(delta)
 }

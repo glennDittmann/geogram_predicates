@@ -40,7 +40,8 @@ fn naive_orient_2d(a: &[f64; 2], b: &[f64; 2], c: &[f64; 2]) -> f64 {
 }
 
 fn usage() -> ! {
-    eprintln!("
+    eprintln!(
+        "
     Usage:
         orient_2d [option]
 
@@ -50,6 +51,7 @@ fn usage() -> ! {
         OTHER:
         help - show this help message
         clean - remove the example output images
-    ");
+    "
+    );
     std::process::exit(1);
 }

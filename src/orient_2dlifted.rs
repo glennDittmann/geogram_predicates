@@ -1,5 +1,5 @@
 pub use crate::Expansion;
-use crate::{Point2d, Sign, FPG_UNCERTAIN_VALUE};
+use crate::{FPG_UNCERTAIN_VALUE, Point2d, Sign};
 use core::cmp::Ordering;
 
 /// Computes the 3d orientation test with lifted points, i.e the regularity test for 2d.

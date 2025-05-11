@@ -191,14 +191,14 @@ fn test_det_3d() {
     let c = [1.0, 1.0, 0.0];
     assert_eq!(gp::det_3d(&a, &b, &c), 0);
 
-    let a = [1e-10, 0.0,   0.0];
-    let b = [0.0,   1e-10, 0.0];
-    let c = [0.0,   0.0,  1e-10];
+    let a = [1e-10, 0.0, 0.0];
+    let b = [0.0, 1e-10, 0.0];
+    let c = [0.0, 0.0, 1e-10];
     assert_eq!(gp::det_3d(&a, &b, &c), 1);
 
-    let a = [1e25, 0.0,  0.0];
-    let b = [0.0,  1e25, 0.0];
-    let c = [0.0,  0.0, -1e25];
+    let a = [1e25, 0.0, 0.0];
+    let b = [0.0, 1e25, 0.0];
+    let c = [0.0, 0.0, -1e25];
     assert_eq!(gp::det_3d(&a, &b, &c), -1);
     gp::terminate();
 }
