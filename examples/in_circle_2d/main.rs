@@ -1,5 +1,5 @@
 use float_extras::f64::nextafter;
-use geogram_predicates::in_circle_2d_sos;
+use geogram_predicates_local::in_circle_2d_sos;
 use std::{fs, path::Path};
 use test_utils::{predicate_2d_test, write_to_png};
 
@@ -19,7 +19,7 @@ fn main() {
 
     let predicate: Box<dyn Fn([f64; 2]) -> f64> = match mode {
         "naive" => Box::new(|p| naive_incircle_2d(&p0, &p1, &p2, &p)),
-        "robust" => Box::new(|p| (in_circle_2d_sos::<true>(&p0, &p1, &p2, &p) as i8).into()),
+        "robust" => Box::new(|p| (in_circle_2d_sos(&p0, &p1, &p2, &p) as i8).into()),
         "clean" => {
             let _ = fs::remove_file("out_naive_orient_2d.png");
             let _ = fs::remove_file("out_robust_orient_2d.png");
