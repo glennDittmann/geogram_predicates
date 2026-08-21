@@ -1,11 +1,12 @@
 //! Multi-precision expansion arithmetic (Shewchuk-style).
 //! Exact predicates are implemented by computing in this number type and taking the sign.
+#![allow(clippy::too_many_arguments)] // Matrix entries mirror Geogram's fixed determinant helpers.
 
 use crate::sign::{geo_sgn, Sign};
 use std::vec::Vec;
 
-/// Global splitter for split() - set by expansion::initialize().
-static mut EXPANSION_SPLITTER: f64 = 0.0;
+/// Shewchuk's splitter for IEEE-754 binary64 (`2^27 + 1`).
+const EXPANSION_SPLITTER: f64 = 134_217_729.0;
 
 /// Expansion: non-overlapping sum of f64 components, least significant first.
 /// Same semantics as Geogram: component 0 is least significant, last is most significant.
@@ -146,19 +147,6 @@ impl Expansion {
             self.assign_product_exp_double(a, b.x[0]);
             return;
         }
-        if a.len() == 2 && b.len() == 2 {
-            let out = two_two_product(&a.x[0..2], &b.x[0..2]);
-            self.x.clear();
-            for &v in &out {
-                if v != 0.0 {
-                    self.x.push(v);
-                }
-            }
-            if self.x.is_empty() {
-                self.x.push(0.0);
-            }
-            return;
-        }
         // General case: scale and sum.
         let mut acc = Expansion::with_capacity(a.len() * 2 + 4);
         acc.assign_product_exp_double(b, a.x[0]);
@@ -219,34 +207,6 @@ impl std::ops::Index<usize> for Expansion {
 
 // --- Primitives (in anonymous namespace style) ---
 
-fn expansion_splitter() -> f64 {
-    unsafe { EXPANSION_SPLITTER }
-}
-
-pub fn expansion_initialize() {
-    let half = 0.5f64;
-    let mut expansion_epsilon = 1.0f64;
-    let mut expansion_splitter = 1.0f64;
-    let mut check = 1.0f64;
-    let mut every_other = true;
-    loop {
-        let lastcheck = check;
-        expansion_epsilon *= half;
-        if every_other {
-            expansion_splitter *= 2.0;
-        }
-        every_other = !every_other;
-        check = 1.0 + expansion_epsilon;
-        if check == 1.0 || check == lastcheck {
-            break;
-        }
-    }
-    expansion_splitter += 1.0;
-    unsafe {
-        EXPANSION_SPLITTER = expansion_splitter;
-    }
-}
-
 #[inline]
 fn two_sum(a: f64, b: f64) -> (f64, f64) {
     let x = a + b;
@@ -279,7 +239,7 @@ fn two_diff(a: f64, b: f64) -> (f64, f64) {
 
 #[inline]
 fn split(a: f64) -> (f64, f64) {
-    let c = expansion_splitter() * a;
+    let c = EXPANSION_SPLITTER * a;
     let abig = c - a;
     let ahi = c - abig;
     let alo = a - ahi;
@@ -318,33 +278,6 @@ fn square(a: f64) -> (f64, f64) {
     let err3 = err1 - ((ahi + ahi) * alo);
     let y = (alo * alo) - err3;
     (x, y)
-}
-
-fn two_two_product(a: &[f64], b: &[f64]) -> [f64; 8] {
-    let (bhi, blo) = split(b[0]);
-    let (mut _i, x0) = two_product_presplit(a[0], b[0], bhi, blo);
-    let (_a1hi, _a1lo) = split(a[1]);
-    let (_j, _0) = two_product_presplit(a[1], b[0], bhi, blo);
-    let (sum_k, _1) = two_sum(_i, _0);
-    let (l, _2) = fast_two_sum(_j, sum_k);
-    let (b1hi, b1lo) = split(b[1]);
-    let (_i, _0) = two_product_presplit(a[0], b[1], b1hi, b1lo);
-    let (sum_k, x1) = two_sum(_1, _0);
-    let (_j, _1) = two_sum(_2, sum_k);
-    let (m, _2) = two_sum(l, _j);
-    let (_j, _0) = two_product_presplit(a[1], b[1], b1hi, b1lo);
-    let (n, _0) = two_sum(_i, _0);
-    let (_i, x2) = two_sum(_1, _0);
-    let (sum_k, _1) = two_sum(_2, _i);
-    let (l, _2) = two_sum(m, sum_k);
-    let (sum_k, _0) = two_sum(_j, n);
-    let (_j, x3) = two_sum(_1, _0);
-    let (_i, _1) = two_sum(_2, _j);
-    let (m, _2) = two_sum(l, _i);
-    let (_i, x4) = two_sum(_1, sum_k);
-    let (sum_k, x5) = two_sum(_2, _i);
-    let (x7, x6) = two_sum(m, sum_k);
-    [x0, x1, x2, x3, x4, x5, x6, x7]
 }
 
 #[allow(dead_code)]
@@ -548,12 +481,6 @@ pub fn expansion_sum3(a: &Expansion, b: &Expansion, c: &Expansion) -> Expansion 
     expansion_sum(&ab, c)
 }
 
-pub fn expansion_sum4(a: &Expansion, b: &Expansion, c: &Expansion, d: &Expansion) -> Expansion {
-    let ab = expansion_sum(a, b);
-    let cd = expansion_sum(c, d);
-    expansion_sum(&ab, &cd)
-}
-
 pub fn expansion_diff(a: &Expansion, b: &Expansion) -> Expansion {
     let capa = a.len() + b.len();
     let mut h = Expansion::with_capacity(capa);
@@ -570,6 +497,101 @@ pub fn expansion_product(a: &Expansion, b: &Expansion) -> Expansion {
     let mut h = Expansion::with_capacity(capa.max(4));
     h.assign_product_exp_exp(a, b);
     h
+}
+
+/// Exact product of an expansion and one binary64 value.
+pub fn expansion_scale(a: &Expansion, b: f64) -> Expansion {
+    let mut result = Expansion::with_capacity(a.len().saturating_mul(2).max(2));
+    result.assign_product_exp_double(a, b);
+    result
+}
+
+/// Exact squared distance between two binary64 points.
+pub fn expansion_sq_dist<const D: usize>(a: &[f64; D], b: &[f64; D]) -> Expansion {
+    let mut result = expansion_create(0.0);
+    for i in 0..D {
+        let d = expansion_diff_2(a[i], b[i]);
+        let square = expansion_product(&d, &d);
+        result = expansion_sum(&result, &square);
+    }
+    result
+}
+
+/// Exact dot product `(p - origin) . (q - origin)`.
+pub fn expansion_dot_at<const D: usize>(
+    p: &[f64; D],
+    q: &[f64; D],
+    origin: &[f64; D],
+) -> Expansion {
+    let mut result = expansion_create(0.0);
+    for i in 0..D {
+        let u = expansion_diff_2(p[i], origin[i]);
+        let v = expansion_diff_2(q[i], origin[i]);
+        result = expansion_sum(&result, &expansion_product(&u, &v));
+    }
+    result
+}
+
+/// Exact determinant of a small square expansion matrix.
+///
+/// Predicate matrices in this crate are at most 5x5, so recursive cofactor
+/// expansion keeps this helper compact without making exact fallbacks hot.
+pub fn expansion_determinant(matrix: &[Vec<Expansion>]) -> Expansion {
+    let n = matrix.len();
+    assert!(matrix.iter().all(|row| row.len() == n));
+    if n == 0 {
+        return expansion_create(1.0);
+    }
+    if n == 1 {
+        return matrix[0][0].clone();
+    }
+
+    let mut result = expansion_create(0.0);
+    for column in 0..n {
+        if matrix[0][column].sign() == Sign::Zero {
+            continue;
+        }
+        let mut minor = Vec::with_capacity(n - 1);
+        for source_row in matrix.iter().skip(1) {
+            let mut row = Vec::with_capacity(n - 1);
+            for (source_column, value) in source_row.iter().enumerate() {
+                if source_column != column {
+                    row.push(value.clone());
+                }
+            }
+            minor.push(row);
+        }
+        let mut term = expansion_product(&matrix[0][column], &expansion_determinant(&minor));
+        if column % 2 != 0 {
+            term.negate();
+        }
+        result = expansion_sum(&result, &term);
+    }
+    result
+}
+
+/// Exact cofactor at `(row, column)` in a square expansion matrix.
+pub fn expansion_cofactor(matrix: &[Vec<Expansion>], row: usize, column: usize) -> Expansion {
+    let n = matrix.len();
+    assert!(row < n && column < n && matrix.iter().all(|values| values.len() == n));
+    let mut minor = Vec::with_capacity(n.saturating_sub(1));
+    for (source_row, values) in matrix.iter().enumerate() {
+        if source_row == row {
+            continue;
+        }
+        let mut minor_row = Vec::with_capacity(n.saturating_sub(1));
+        for (source_column, value) in values.iter().enumerate() {
+            if source_column != column {
+                minor_row.push(value.clone());
+            }
+        }
+        minor.push(minor_row);
+    }
+    let mut result = expansion_determinant(&minor);
+    if (row + column) % 2 != 0 {
+        result.negate();
+    }
+    result
 }
 
 pub fn expansion_det2x2(
@@ -690,4 +712,27 @@ pub fn sign_of_expansion_det4x4(
     let z2 = expansion_sum(&m0123_2, &m0123_4);
     let result = expansion_diff(&z1, &z2);
     result.sign()
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn two_product_retains_low_component() {
+        let a = 134_217_729.0;
+        let (high, low) = two_product(a, a);
+        assert_eq!(high, 18_014_398_777_917_440.0);
+        assert_eq!(low, 1.0);
+    }
+
+    #[test]
+    fn expansion_cancellation_is_exact() {
+        let large = expansion_create(1.0e16);
+        let one = expansion_create(1.0);
+        let sum = expansion_sum(&large, &one);
+        let restored = expansion_diff(&sum, &large);
+        assert_eq!(restored.sign(), Sign::Positive);
+        assert_eq!(restored.as_slice(), &[1.0]);
+    }
 }

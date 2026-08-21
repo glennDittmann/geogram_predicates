@@ -1,6 +1,6 @@
 use geogram_predicates_local::orient_2d;
 use std::{fs, path::Path};
-use test_utils::{predicate_2d_test, write_to_png};
+use test_utils::{predicate_2d_test, write_to_pgm};
 
 fn main() {
     let args = std::env::args().collect::<Vec<_>>();
@@ -18,19 +18,19 @@ fn main() {
         "naive" => Box::new(|p| naive_orient_2d(&p1, &p, &p2)),
         "robust" => Box::new(|p| (orient_2d(&p1, &p, &p2) as i8).into()),
         "clean" => {
-            let _ = fs::remove_file("out_naive_orient_2d.png");
-            let _ = fs::remove_file("out_robust_orient_2d.png");
+            let _ = fs::remove_file("out_naive_orient_2d.pgm");
+            let _ = fs::remove_file("out_robust_orient_2d.pgm");
             println!("example images removed");
             std::process::exit(1);
         }
-        "help" | _ => usage(),
+        _ => usage(),
     };
 
     let predicate_results = predicate_2d_test(predicate, [0.5, 0.5], 256, 256);
 
-    let out_path = format!("out_{}_orient_2d.png", mode);
+    let out_path = format!("out_{}_orient_2d.pgm", mode);
 
-    write_to_png(&predicate_results, Path::new(&out_path), 256, 256);
+    write_to_pgm(&predicate_results, Path::new(&out_path), 256, 256);
 }
 
 // Directly evaluate the orient2d determinant.

@@ -1,4 +1,5 @@
 //! Floating-point filter functions. Return sign or 0 for "uncertain" (need exact path).
+#![allow(clippy::excessive_precision)] // Constants are copied verbatim from Geogram's generated filters.
 
 /// Value returned when the filter cannot determine the sign (exact arithmetic required).
 pub const FPG_UNCERTAIN_VALUE: i8 = 0;
@@ -58,8 +59,7 @@ pub fn orient_3d_filter(p0: &[f64], p1: &[f64], p2: &[f64], p3: &[f64]) -> i8 {
     let a31 = p3[0] - p0[0];
     let a32 = p3[1] - p0[1];
     let a33 = p3[2] - p0[2];
-    let delta = (a11 * ((a22 * a33) - (a23 * a32)))
-        - (a21 * ((a12 * a33) - (a13 * a32)))
+    let delta = (a11 * ((a22 * a33) - (a23 * a32))) - (a21 * ((a12 * a33) - (a13 * a32)))
         + (a31 * ((a12 * a23) - (a13 * a22)));
     let mut max1 = fabs(a11);
     if max1 < fabs(a21) {
@@ -310,48 +310,6 @@ pub fn dot_3d_filter(p0: &[f64], p1: &[f64], p2: &[f64]) -> i8 {
     }
 }
 
-/// aligned_3d: true if (p1-p0) and (p2-p0) are collinear (cross product zero).
-#[inline]
-pub fn aligned_3d_filter(p0: &[f64], p1: &[f64], p2: &[f64]) -> bool {
-    let ux = p1[0] - p0[0];
-    let uy = p1[1] - p0[1];
-    let uz = p1[2] - p0[2];
-    let vx = p2[0] - p0[0];
-    let vy = p2[1] - p0[1];
-    let vz = p2[2] - p0[2];
-    let cx = (uy * vz) - (uz * vy);
-    let cy = (uz * vx) - (ux * vz);
-    let cz = (ux * vy) - (uy * vx);
-    let mut max1 = fabs(ux);
-    if max1 < fabs(uy) {
-        max1 = fabs(uy);
-    }
-    if max1 < fabs(uz) {
-        max1 = fabs(uz);
-    }
-    let mut max2 = fabs(vx);
-    if max2 < fabs(vy) {
-        max2 = fabs(vy);
-    }
-    if max2 < fabs(vz) {
-        max2 = fabs(vz);
-    }
-    let (mut lower_bound_1, mut upper_bound_1) = (max1, max1);
-    if max2 < lower_bound_1 {
-        lower_bound_1 = max2;
-    } else if max2 > upper_bound_1 {
-        upper_bound_1 = max2;
-    }
-    if lower_bound_1 < 2.00491534964401497902e-98 {
-        return false; // uncertain
-    }
-    if upper_bound_1 > 1.11987237108890185662e+102 {
-        return false;
-    }
-    let eps = 2.44649357902858013632e-15 * (max1 * max2);
-    fabs(cx) <= eps && fabs(cy) <= eps && fabs(cz) <= eps
-}
-
 /// side4_3d filter: orient_4d in 3d lifted (4x4 matrix with last column -||pi-p0||^2).
 /// Returns sign; 0 = uncertain.
 #[inline]
@@ -384,17 +342,13 @@ pub fn side4_3d_filter(p0: &[f64], p1: &[f64], p2: &[f64], p3: &[f64], p4: &[f64
     let p4_1_p0_1 = p4[1] - p0[1];
     let p4_2_p0_2 = p4[2] - p0[2];
     let a44 = -((p4_0_p0_0 * p4_0_p0_0) + (p4_1_p0_1 * p4_1_p0_1) + (p4_2_p0_2 * p4_2_p0_2));
-    let delta1 = (a21 * ((a32 * a43) - (a33 * a42)))
-        - (a31 * ((a22 * a43) - (a23 * a42)))
+    let delta1 = (a21 * ((a32 * a43) - (a33 * a42))) - (a31 * ((a22 * a43) - (a23 * a42)))
         + (a41 * ((a22 * a33) - (a23 * a32)));
-    let delta2 = (a11 * ((a32 * a43) - (a33 * a42)))
-        - (a31 * ((a12 * a43) - (a13 * a42)))
+    let delta2 = (a11 * ((a32 * a43) - (a33 * a42))) - (a31 * ((a12 * a43) - (a13 * a42)))
         + (a41 * ((a12 * a33) - (a13 * a32)));
-    let delta3 = (a11 * ((a22 * a43) - (a23 * a42)))
-        - (a21 * ((a12 * a43) - (a13 * a42)))
+    let delta3 = (a11 * ((a22 * a43) - (a23 * a42))) - (a21 * ((a12 * a43) - (a13 * a42)))
         + (a41 * ((a12 * a23) - (a13 * a22)));
-    let delta4 = (a11 * ((a22 * a33) - (a23 * a32)))
-        - (a21 * ((a12 * a33) - (a13 * a32)))
+    let delta4 = (a11 * ((a22 * a33) - (a23 * a32))) - (a21 * ((a12 * a33) - (a13 * a32)))
         + (a31 * ((a12 * a23) - (a13 * a22)));
     let r = (((delta1 * a14) - (delta2 * a24)) + (delta3 * a34)) - (delta4 * a44);
     let mut max1 = fabs(a11);

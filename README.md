@@ -7,9 +7,7 @@ No C++ or external crates are required.
 ## Example
 
 ```rust
-use geogram_predicates::{initialize, orient_2d, in_circle_2d_sos, in_sphere_3d_sos, Sign};
-
-initialize();
+use geogram_predicates_local::{in_circle_2d_sos, orient_2d, Sign, SosPoint};
 
 // 2D orientation (counter-clockwise = Positive)
 let a = [0.0, 0.0];
@@ -18,18 +16,13 @@ let c = [1.0, 1.0];
 assert_eq!(orient_2d(&a, &b, &c), Sign::Positive);
 
 // In-circle test (Positive = inside circumcircle of triangle a,b,c)
-let p_in = [1.0, -0.4];
-let p_out = [1.0, -1.2];
+let a = SosPoint::new(a, 10);
+let b = SosPoint::new(b, 20);
+let c = SosPoint::new(c, 30);
+let p_in = SosPoint::new([1.0, -0.4], 40);
+let p_out = SosPoint::new([1.0, -1.2], 50);
 assert_eq!(in_circle_2d_sos(&a, &b, &c, &p_in), Sign::Positive);
 assert_eq!(in_circle_2d_sos(&a, &b, &c, &p_out), Sign::Negative);
-
-// In-sphere test (Negative = inside circumsphere)
-let d = [0.0, 0.0, 0.0];
-let e = [2.0, 0.0, 0.0];
-let f = [0.0, 2.0, 0.0];
-let g = [0.75, 0.75, 1.0];
-let p = [0.75, 0.75, 0.5];
-assert_eq!(in_sphere_3d_sos(&d, &e, &f, &g, &p), Sign::Negative);
 ```
 
 ## Supported predicates
@@ -38,21 +31,36 @@ assert_eq!(in_sphere_3d_sos(&d, &e, &f, &g, &p), Sign::Negative);
 |-----------|-------------|
 | `orient_2d` | Sign of 2D orientation (p1−p0)×(p2−p0) |
 | `orient_3d` | Sign of 3D orientation (tetrahedron volume) |
-| `in_circle_2d_sos` | Is point inside circumcircle of triangle? (SOS) |
-| `in_sphere_3d_sos` | Is point inside circumsphere of tetrahedron? |
+| `in_circle_2d[_sos]`, `in_circle_3d[_sos]` | In-circle tests in 2D and embedded 3D |
+| `in_sphere_3d[_sos]` | In-sphere test; positive means inside for a positive tetrahedron |
+| `orient_2dlifted[_sos]`, `orient_3dlifted[_sos]` | Weighted/lifted orientation tests |
+| `side1_sos` … `side4_sos` | Generic PCK power-side predicates in dimensions 3, 4, 6, 7, and 8 |
 | `det_3d` | Sign of 3×3 determinant |
 | `det_4d` | Sign of 4×4 determinant |
+| `det_compare_4d`, `dot_compare_3d` | Exact determinant and dot-product comparisons |
 | `dot_3d` | Sign of dot product (p1−p0)·(p2−p0) |
 | `aligned_3d` | Are (p1−p0) and (p2−p0) collinear? |
 
-## Initialization
+## Simulation of Simplicity
 
-Call `initialize()` before using any predicate (sets up expansion arithmetic constants). `terminate()` is optional (no-op in this port).
+SOS predicates take `SosPoint`s. A key is a stable identity for a logical
+vertex and must be unique within a predicate call. Exact degeneracies are
+resolved by key order, making results reproducible across runs and machines.
+Duplicate keys panic with a contract error. Non-SOS variants return `Zero` for
+an exact degeneracy.
+
+No initialization is required. `initialize()`, `terminate()`, and
+`show_stats()` are safe compatibility no-ops.
+
+Predicate inputs must be finite `f64` values. As in the upstream PSM, NaN,
+infinity, and computations that overflow binary64 are outside the supported
+input domain. Side predicates also require a nondegenerate query simplex.
 
 ## Design
 
 - **Dependency-free**: no `robust`, `nalgebra`, or C++.
-- **API aligned with Geogram**: same names, signs (e.g. in_sphere: Negative = inside), and filter-then-exact pattern.
+- **Safe Rust**: the crate uses `#![forbid(unsafe_code)]`.
+- **API aligned with Geogram**: predicate names and signs follow the bundled PSM; SOS ordering uses stable keys instead of addresses.
 - **Exact arithmetic**: Shewchuk-style expansions (two_sum, two_product, etc.) with zero-elimination.
 
 ## License

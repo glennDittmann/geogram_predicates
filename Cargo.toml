@@ -6,20 +6,22 @@ resolver = "2"
 [package]
 name = "geogram_predicates_local"
 description = "Dependency-free Rust port of Geogram's robust predicates (PCK)"
-version = "0.3.0"
+version = "0.4.0"
 edition = "2021"
 rust-version = "1.70"
 
 repository = "https://github.com/glennDittmann/geogram_predicates"
 authors = ["Glenn Dittmann", "TimTheBig"]
 license = "LGPL-3.0 OR MIT"
+include = ["src/**/*.rs", "examples/**/*.rs", "README.md", "Cargo.toml"]
 
 keywords = ["computer-graphics", "math", "geometry", "predicates", "robust"]
 categories = ["mathematics", "graphics"]
 
 [dependencies]
-# No dependencies - full port of Geogram predicates
-[dev-dependencies]
-float_extras = "0.1.6"
 
+[dev-dependencies]
 test_utils = { path = "test_utils" }
+
+[package.metadata.docs.rs]
+all-features = true
