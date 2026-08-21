@@ -63,6 +63,34 @@ input domain. Side predicates also require a nondegenerate query simplex.
 - **API aligned with Geogram**: predicate names and signs follow the bundled PSM; SOS ordering uses stable keys instead of addresses.
 - **Exact arithmetic**: Shewchuk-style expansions (two_sum, two_product, etc.) with zero-elimination.
 
+## Differential testing against Geogram
+
+The opt-in differential test compiles the bundled C++ PSM as a batched oracle
+and compares it with the Rust implementation. It requires a C++17 compiler but
+does not add C++, FFI, dependencies, or unsafe code to the crate itself.
+
+```console
+cargo test --release --test cpp_differential -- --ignored --nocapture
+```
+
+The default run uses 10,000 deterministic cases. Increase the corpus or select
+a reproducible seed with environment variables:
+
+```console
+GEOGRAM_DIFF_CASES=1000000 GEOGRAM_DIFF_SEED=0x123456789abcdef0 \
+    cargo test --release --test cpp_differential -- --ignored --nocapture
+```
+
+Set `CXX=clang++` (or another GNU-compatible C++ driver) to override the default
+`c++` command. A mismatch reports its case index, seed, predicate, keys, and the
+exact binary64 bits of every input. Normal `cargo test` runs compile this test
+but skip its C++ oracle.
+
+The PSM's public `dot_3d()` contains an upstream typo: it first calls the
+`det_3d` filter. Differential dot-product cases therefore force the PSM's
+correct exact fallback; the Rust implementation retains the documented dot
+product semantics.
+
 ## License
 
 LGPL-3.0 OR MIT. The C++ reference in `include/geogram_predicates_psm/` is Inria’s Geogram PSM (see that directory for its license).

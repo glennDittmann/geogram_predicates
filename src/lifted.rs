@@ -68,11 +68,22 @@ fn lifted_exact<const D: usize>(
     let mut coefficients = Vec::with_capacity(points.len());
     for row in 0..matrix.len() {
         let cofactor = expansion_cofactor(&matrix, row, last_column);
-        p0_coefficient = expansion_sum(&p0_coefficient, &cofactor);
-        let mut point_coefficient = cofactor;
-        point_coefficient.negate();
-        coefficients.push(point_coefficient);
+        let last_2d_point = D == 2 && row + 1 == matrix.len();
+        if last_2d_point {
+            p0_coefficient = expansion_sum(&p0_coefficient, &cofactor);
+            let mut point_coefficient = cofactor;
+            point_coefficient.negate();
+            coefficients.push(point_coefficient);
+        } else {
+            let mut negative_cofactor = cofactor.clone();
+            negative_cofactor.negate();
+            p0_coefficient = expansion_sum(&p0_coefficient, &negative_cofactor);
+            coefficients.push(cofactor);
+        }
     }
+    // These signs mirror Geogram's specialized side3h/side4h SOS branches.
+    // The final point in the 2D variant uses the terminal `NEGATIVE` term from
+    // side3h_2d_exact_SOS; the 3D variant is the direct cofactor ordering.
     coefficients.insert(0, p0_coefficient);
 
     let mut order: Vec<usize> = (0..points.len()).collect();

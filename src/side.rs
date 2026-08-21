@@ -2,8 +2,9 @@
 #![allow(clippy::too_many_arguments)] // Public signatures intentionally mirror the PCK predicates.
 
 use crate::expansion::{
-    expansion_cofactor, expansion_create, expansion_determinant, expansion_diff_2,
-    expansion_dot_at, expansion_scale, expansion_sq_dist, expansion_sum, Expansion,
+    expansion_cofactor, expansion_create, expansion_determinant, expansion_diff, expansion_diff_2,
+    expansion_dot_at, expansion_product, expansion_scale, expansion_sq_dist, expansion_sum,
+    Expansion,
 };
 use crate::filter::{side4_3d_filter, FPG_UNCERTAIN_VALUE};
 use crate::{Sign, SosPoint};
@@ -91,26 +92,48 @@ fn evaluate_side<const D: usize>(
         return delta_sign * result.sign();
     }
 
-    // Geogram perturbs each power/lift value by a key-ordered infinitesimal.
-    // Relative to p0 this changes every lift by +eps(p0)-eps(pi).
-    let last_column = augmented.len() - 1;
-    let mut p0_coefficient = expansion_create(0.0);
-    let mut coefficients = Vec::with_capacity(points.len());
-    for row in 1..augmented.len() {
-        let cofactor = expansion_cofactor(&augmented, row, last_column);
-        p0_coefficient = expansion_sum(&p0_coefficient, &cofactor);
-        let mut point_coefficient = cofactor;
-        point_coefficient.negate();
-        coefficients.push(point_coefficient);
-    }
-    coefficients.insert(0, p0_coefficient);
-
+    // Reproduce Geogram's side1..side4 SOS decision using the adjugate of the
+    // interpolation matrix. For side4 the PSM intentionally evaluates the SOS
+    // coefficients with p3 (rather than p4), so retain that exact convention.
+    let k = coefficient_matrix.len();
+    let adjugate: Vec<Vec<Expansion>> = (0..k)
+        .map(|row| {
+            (0..k)
+                .map(|column| expansion_cofactor(&coefficient_matrix, column, row))
+                .collect()
+        })
+        .collect();
+    let evaluation_row = if k == 4 { k - 1 } else { k };
+    let evaluation = &augmented[evaluation_row];
     let mut order: Vec<usize> = (0..points.len()).collect();
     order.sort_unstable_by_key(|&index| points[index].key);
     for index in order {
-        let coefficient_sign = coefficients[index].sign();
-        if coefficient_sign != Sign::Zero {
-            return delta_sign * coefficient_sign;
+        if index == k {
+            return Sign::Negative;
+        }
+        let coefficient = if index == 0 {
+            let mut correction = expansion_create(0.0);
+            for row in 0..k {
+                let mut row_sum = expansion_create(0.0);
+                for value in adjugate[row].iter().skip(1) {
+                    row_sum = expansion_sum(&row_sum, value);
+                }
+                correction =
+                    expansion_sum(&correction, &expansion_product(&evaluation[row], &row_sum));
+            }
+            expansion_diff(&delta, &correction)
+        } else {
+            let mut coefficient = expansion_create(0.0);
+            for row in 0..k {
+                coefficient = expansion_sum(
+                    &coefficient,
+                    &expansion_product(&evaluation[row], &adjugate[row][index]),
+                );
+            }
+            coefficient
+        };
+        if coefficient.sign() != Sign::Zero {
+            return delta_sign * coefficient.sign();
         }
     }
     panic!("SOS perturbation could not resolve a degenerate side predicate");
@@ -221,11 +244,14 @@ pub fn side4_sos<const D: usize>(
     if D == 3 {
         // As in Geogram, intrinsic dimension equals ambient dimension here;
         // the embedding tetrahedron is unnecessary and intentionally ignored.
-        return side_exact(
-            &[p0, p1, p2, p3, p4],
-            &[&p0.coords, &p1.coords, &p2.coords, &p3.coords],
-            true,
-        );
+        let points = [
+            SosPoint::new([p0.coords[0], p0.coords[1], p0.coords[2]], p0.key),
+            SosPoint::new([p1.coords[0], p1.coords[1], p1.coords[2]], p1.key),
+            SosPoint::new([p2.coords[0], p2.coords[1], p2.coords[2]], p2.key),
+            SosPoint::new([p3.coords[0], p3.coords[1], p3.coords[2]], p3.key),
+            SosPoint::new([p4.coords[0], p4.coords[1], p4.coords[2]], p4.key),
+        ];
+        return side4_3d_sos(&points[0], &points[1], &points[2], &points[3], &points[4]);
     }
     side_exact(&[p0, p1, p2, p3, p4], &[q0, q1, q2, q3], true)
 }
@@ -263,9 +289,71 @@ pub fn side4_3d_sos(
     if filtered != FPG_UNCERTAIN_VALUE {
         return Sign::from_i8(filtered);
     }
-    side_exact(
+    let exact = side_exact(
         &[p0, p1, p2, p3, p4],
         &[&p0.coords, &p1.coords, &p2.coords, &p3.coords],
-        true,
-    )
+        false,
+    );
+    if exact != Sign::Zero {
+        return exact;
+    }
+    side4_3d_sos_decision([p0, p1, p2, p3, p4])
+}
+
+fn side4_3d_sos_decision(points: [&SosPoint<3>; 5]) -> Sign {
+    let differences: Vec<Vec<Expansion>> = points
+        .iter()
+        .skip(1)
+        .map(|point| {
+            (0..3)
+                .map(|coordinate| {
+                    expansion_diff_2(point.coords[coordinate], points[0].coords[coordinate])
+                })
+                .collect()
+        })
+        .collect();
+    let minor = |excluded: usize| {
+        expansion_determinant(
+            &differences
+                .iter()
+                .enumerate()
+                .filter(|(row, _)| *row != excluded)
+                .map(|(_, row)| row.clone())
+                .collect::<Vec<_>>(),
+        )
+    };
+    let delta1 = minor(0);
+    let delta2 = minor(1);
+    let delta3 = minor(2);
+    let delta4 = minor(3);
+    let delta4_sign = delta4.sign();
+    assert_ne!(
+        delta4_sign,
+        Sign::Zero,
+        "side4_3d base tetrahedron is degenerate"
+    );
+
+    let mut order: Vec<usize> = (0..5).collect();
+    order.sort_unstable_by_key(|&index| points[index].key);
+    for index in order {
+        let coefficient = match index {
+            0 => expansion_sum(
+                &expansion_diff(&delta2, &delta1),
+                &expansion_diff(&delta4, &delta3),
+            ),
+            1 => delta1.clone(),
+            2 => {
+                let mut value = delta2.clone();
+                value.negate();
+                value
+            }
+            3 => delta3.clone(),
+            4 => return Sign::Negative,
+            _ => unreachable!(),
+        };
+        if coefficient.sign() != Sign::Zero {
+            return delta4_sign * coefficient.sign();
+        }
+    }
+    panic!("SOS perturbation could not resolve a degenerate side4_3d predicate");
 }
