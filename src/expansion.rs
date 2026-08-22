@@ -10,6 +10,36 @@ const EXPANSION_SPLITTER: f64 = 134_217_729.0;
 
 /// Expansion: non-overlapping sum of f64 components, least significant first.
 /// Same semantics as Geogram: component 0 is least significant, last is most significant.
+///
+/// <br>
+///
+/// More theoretical:
+///
+/// An `Expansion`\[1\]\[2\] is defined as _x = x_n + ... + x_1_
+///
+/// Each _x_i_ is a _component_ of _x_, represented by a p-bit significand floating-point value.
+///
+/// Two properties are assumed on `Expansions`
+///
+/// 1. Its components are ordered by magnitude, i.e. _x_n > ... > ... x_1_
+///
+/// 2. Its components are non-overlapping, that means the least significant non-zero bit of some component _a_ is more
+/// significant than the most significant non-zero bit of some component _b_ (or vice versa) for all components of _x_.
+/// `0` does not overlap any number.
+///
+/// ### Example Overlapping/non-Overlapping
+/// `1100` and `-10.1` (1) are non-overlapping, whereas `101` and `10` (2) are.
+///
+/// One can see that easily by writing the numbers in rows above each other and fill with leading zeroes:
+///
+/// Ex. (1) `+1100.0` | Ex. (2) `101`
+///
+/// Ex. (2) `-0010.1` | Ex. (2) `010`
+///
+/// ### Notes
+/// A number can be represented by multiple non-overlapping expansion, e.g. `x = 1100 + –10.1 = 1001 + 0.1 = 1000 + 1 + 0.1`.
+///
+/// A non-overlapping `Expansion` is favorable, because one can easily compute its sing (sign of _x_n_) or get a crude approximation (_x_n_).
 #[derive(Clone, Debug)]
 pub struct Expansion {
     x: Vec<f64>,
