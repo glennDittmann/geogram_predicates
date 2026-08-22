@@ -5,7 +5,7 @@ cargo run --example orient_2d naive
 cargo run --example orient_2d robust
 ```
 
-This will save the output in `out_{naive, robust}_orient_2d.png`. Or see the pre-computed examples in [`images/`](../../images/).
+This saves `out_{naive,robust}_orient_2d.pgm`, a dependency-free grayscale portable graymap. Pre-computed PNG renderings remain in [`images/`](../../images/).
 
 # Idea
 
@@ -17,12 +17,10 @@ For example, we compute the `orient2d` predicate on `(12.0,
 12.0)`, `(c[i], c[j])`, `(24.0, 24.0)`; where `i, j` varies
 in `0..256`, and `c[i]` is the `i`th float after `0.5`. In
 other words, `c[i]` is obtained by starting at `0.5`, and
-calling
-[`nextafter`](https://docs.rs/float_extras/*/float_extras/f64/fn.nextafter.html)
-`i` times.
+calling a small local `next_after` helper `i` times.
 
 The inputs are set up so that, if the predicates are
-calculated exactly, the output is a `png` with gray values on
+calculated exactly, the output is a graymap with gray values on
 the main diagonal, black on the lower-left, and white on
 the upper-right side of it. However, the naive versions show
 that the predicate is not robust: it switches values on both

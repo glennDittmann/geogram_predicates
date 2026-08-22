@@ -1,20 +1,27 @@
-workspace = { members = ["test_utils"] }
+[workspace]
+members = ["test_utils"]
+exclude = ["fuzz"]
+resolver = "2"
+
 [package]
 name = "geogram_predicates"
-description = "Rust bindings to the Geogram library's predicates module"
-version = "0.2.1"
-repository = "https://github.com/glennDittmann/geogram_predicates"
-authors = ["Glenn Dittmann"]
+description = "Dependency-free Rust port of Geogram's robust predicates (PCK)"
+version = "0.4.0"
 edition = "2021"
-license = "Apache-2.0"
+rust-version = "1.70"
+
+repository = "https://github.com/glennDittmann/geogram_predicates"
+authors = ["Glenn Dittmann", "TimTheBig"]
+license = "LGPL-3.0 OR MIT"
+include = ["src/**/*.rs", "examples/**/*.rs", "README.md", "Cargo.toml"]
+
 keywords = ["computer-graphics", "math", "geometry", "predicates", "robust"]
+categories = ["mathematics", "graphics"]
 
 [dependencies]
-cxx = "1.0"
-
-[build-dependencies]
-cxx-build = "1.0"
 
 [dev-dependencies]
-float_extras = "0.1.6"
 test_utils = { path = "test_utils" }
+
+[package.metadata.docs.rs]
+all-features = true

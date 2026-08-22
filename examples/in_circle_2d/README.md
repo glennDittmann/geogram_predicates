@@ -5,7 +5,7 @@ cargo run --example in_circle_2d naive
 cargo run --example in_circle_2d robust
 ```
 
-This will save the output in `out_{naive, robust}_in_circle_2d.png`. Or see the pre-computed examples in [`images/`](../../images/).
+This saves `out_{naive,robust}_in_circle_2d.pgm`, a dependency-free grayscale portable graymap. Pre-computed PNG renderings remain in [`images/`](../../images/).
 
 # Idea
 

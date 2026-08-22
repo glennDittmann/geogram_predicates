@@ -1,104 +1,102 @@
 # Geogram Predicates
-A crate for rust interoperability with `geogram`s _robust predicates_; via `cxx`.
 
-Geogram is a scientifically proven, well-documented, feature-rich geometry processing library, which leverages _"[...] arithmetic filters (Meyer and Pion), expansion arithmetics (Shewchuk) and simulation of simplicity (Edelsbrunner)."_ <br>
-Be sure to check it out [here](https://github.com/BrunoLevy/geogram).
+A **dependency-free** Rust port of [Geogram](https://github.com/BrunoLevy/geogram)'s robust predicates (PCK). Uses the same approach as the original: floating-point filters plus exact multi-precision expansion arithmetic (Shewchuk).
 
-It yields easy access to dependecy-free parts of its code base, as so called _Pluggable Software Modules_ (PSM), which in turn make it easy to write `cxx_bridges` for these.
+No C++ or external crates are required.
 
 ## Example
 
-With that, you can add geometry predicates to your rust project, without the need to re-implement existing state-of-the-art software.
-E.g. using geograms incircle predicate for triangles in `rust` looks like this: 
 ```rust
-use geogram_predicates as gp
+use geogram_predicates::{in_circle_2d_sos, orient_2d, Sign, SosPoint};
 
-// Define three points that form a triangle
+// 2D orientation (counter-clockwise = Positive)
 let a = [0.0, 0.0];
 let b = [2.0, 0.0];
 let c = [1.0, 1.0];
+assert_eq!(orient_2d(&a, &b, &c), Sign::Positive);
 
-// Define two points, to test against the triangles circum-circle
-let p_in = [1.0, -0.4];
-let p_out = [1.0, -1.2];
-
-let is_in_circle_p_in = gp::in_circle_2d_SOS(&a, &b, &c, &p_in);
-assert_eq!(1, is_in_circle_p_in);
-
-let is_in_circle_p_out = gp::in_circle_2d_SOS(&a, &b, &c, &p_out);
-assert_eq!(-1, is_in_circle_p_out);
-
-// Do something fancy based on the result
-// ...
+// In-circle test (Positive = inside circumcircle of triangle a,b,c)
+let a = SosPoint::new(a, 10);
+let b = SosPoint::new(b, 20);
+let c = SosPoint::new(c, 30);
+let p_in = SosPoint::new([1.0, -0.4], 40);
+let p_out = SosPoint::new([1.0, -1.2], 50);
+assert_eq!(in_circle_2d_sos(&a, &b, &c, &p_in), Sign::Positive);
+assert_eq!(in_circle_2d_sos(&a, &b, &c, &p_out), Sign::Negative);
 ```
 
-## Visualizing Advantages of Robust Predicates
+## Supported predicates
 
-Below are visualizations comparing naive and robust `orient_2d` & `in_circle_2d` implementations. You can generate these images yourself by running the _examples_ for [`orient_2d`](examples/orient_2d/) or [`in_circle_2d`](examples/in_circle_2d/).
+| Predicate | Description |
+|-----------|-------------|
+| `orient_2d` | Sign of 2D orientation (p1−p0)×(p2−p0) |
+| `orient_3d` | Sign of 3D orientation (tetrahedron volume) |
+| `in_circle_2d[_sos]`, `in_circle_3d[_sos]` | In-circle tests in 2D and embedded 3D |
+| `in_sphere_3d[_sos]` | In-sphere test; positive means inside for a positive tetrahedron |
+| `orient_2dlifted[_sos]`, `orient_3dlifted[_sos]` | Weighted/lifted orientation tests |
+| `side1_sos` … `side4_sos` | Generic PCK power-side predicates in dimensions 3, 4, 6, 7, and 8 |
+| `det_3d` | Sign of 3×3 determinant |
+| `det_4d` | Sign of 4×4 determinant |
+| `det_compare_4d`, `dot_compare_3d` | Exact determinant and dot-product comparisons |
+| `dot_3d` | Sign of dot product (p1−p0)·(p2−p0) |
+| `aligned_3d` | Are (p1−p0) and (p2−p0) collinear? |
 
-|               | Naive                                                   | Robust                                                     |
-|---------------|---------------------------------------------------------|------------------------------------------------------------|
-| `orient_2d`   | ![Orient 2d naive](images/out_naive_orient_2d.png)      | ![Orient 2d robust](images/out_robust_orient_2d.png)       |
-| `in_circle_2d`| ![In circle 2d naive](images/out_naive_in_circle_2d.png)| ![In circle 2d robust](images/out_robust_in_circle_2d.png) |
+## Simulation of Simplicity
 
-## List of currently supported predicates
-### 2D
-- [x] in_circle_2D_SOS()
-- [x] orient_2d()
-- [x] orient_2dlifted_SOS()
-- [x] points_are_identical_2d()
+SOS predicates take `SosPoint`s. A key is a stable identity for a logical
+vertex and must be unique within a predicate call. Exact degeneracies are
+resolved by key order, making results reproducible across runs and machines.
+Duplicate keys panic with a contract error. Non-SOS variants return `Zero` for
+an exact degeneracy.
 
+No initialization is required. `initialize()`, `terminate()`, and
+`show_stats()` are safe compatibility no-ops.
 
-### 3D
-- [x] det_3d()
-- [x] dot_3d()
-- [x] in_sphere_3d_SOS()
-- [x] orient_3d()
-- [x] orient_3d_inexact()
-- [x] orient_3dlifted_SOS()
-- [x] points_are_colinear_3d()
-- [x] points_are_identical_3d()
-
-### Other
-- [x] det_4d()
-- [x] geo_sgn()
-- [x] initialize()
-- [x] show_stats()
-- [x] terminate()
-
-There are a lot of predicates still to be implemented. If you are in need for a specific one have a look at the [geograms predicate list](https://brunolevy.github.io/geogram/predicates_8h.html). The bridge for any one predicate is implemented pretty quickly, so this crate is easily extendable.
+Predicate inputs must be finite `f64` values. As in the upstream PSM, NaN,
+infinity, and computations that overflow binary64 are outside the supported
+input domain. Side predicates also require a nondegenerate query simplex.
 
 ## Design
-The API to the `geogram predicates` is designed with the following design principles in mind:
-- **Relation to geogram**: the _function names_, _signatures_ and _doc strings_ should be as close as possible to the original. This keeps maintaining, updating and comparing as simple as possible
 
-## Contribution
-If you see something as
-- a missing geogram predicate,
-- software design principles that could be improved,
-- potential bugs,
-- ambiguous documentation, typos etc.,
-- ...
+- **Dependency-free**: no `robust`, `nalgebra`, or C++.
+- **Safe Rust**: the crate uses `#![forbid(unsafe_code)]`.
+- **API aligned with Geogram**: predicate names and signs follow the bundled PSM; SOS ordering uses stable keys instead of addresses.
+- **Exact arithmetic**: Shewchuk-style expansions (two_sum, two_product, etc.) with zero-elimination.
 
-feel free to open a PR to address this.
+## Differential testing against Geogram
 
-## Acknowledgements
-Credits go to [geogram](https://github.com/BrunoLevy/geogram)
- and [cxx](https://github.com/dtolnay/cxx), which make this project possible.
+The opt-in differential test compiles the bundled C++ PSM as a batched oracle
+and compares it with the Rust implementation. It requires a C++17 compiler but
+does not add C++, FFI, dependencies, or unsafe code to the crate itself.
 
-Also [georust/robust](https://github.com/georust/robust) should be mentioned, for helping set up the examples and their visualizations.
+```console
+cargo test --release --test cpp_differential -- --ignored --nocapture
+```
 
-Thanks @BrunoLevy for [appreciating this project](https://x.com/BrunoLevy01/status/1783306804300075379)!
+The default run uses 10,000 deterministic cases. Increase the corpus or select
+a reproducible seed with environment variables:
+
+```console
+GEOGRAM_DIFF_CASES=1000000 GEOGRAM_DIFF_SEED=0x123456789abcdef0 \
+    cargo test --release --test cpp_differential -- --ignored --nocapture
+```
+
+Set `CXX=clang++` (or another GNU-compatible C++ driver) to override the default
+`c++` command. A mismatch reports its case index, seed, predicate, keys, and the
+exact binary64 bits of every input. Normal `cargo test` runs compile this test
+but skip its C++ oracle.
+
+The PSM's public `dot_3d()` contains an upstream typo: it first calls the
+`det_3d` filter. Differential dot-product cases therefore force the PSM's
+correct exact fallback; the Rust implementation retains the documented dot
+product semantics.
 
 ## License
-The files in `include/geogram_predicates_psm` are licensed w.r.t.
 
-> Copyright (c) 2000-2022 Inria All rights reserved.
->
-> Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
->
-> Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution. Neither the name of the ALICE Project-Team nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
->
-> THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+LGPL-3.0 OR MIT. The C++ reference in `include/geogram_predicates_psm/` is Inria’s Geogram PSM (see that directory for its license).
 
-The rest of this software is licensed under <a href="LICENSE-APACHE">Apache License, Version 2.0</a> (similar to cxx's license).
+## References
+
+- Shewchuk, “Robust adaptive floating-point geometric predicates,” SoCG 1996.
+- Shewchuk, “Adaptive precision floating-point arithmetic and fast robust geometric predicates,” DCG 1997.
+- [Geogram](https://github.com/BrunoLevy/geogram)

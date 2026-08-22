@@ -2,21 +2,33 @@ name: Rust
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
+  pull_request:
+    branches: ["*"]
 
 env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  build:
-    
-    runs-on: macos-latest
-    
+  test:
+    runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v2
-      
+      - uses: actions/checkout@v4
+      - uses: Swatinem/rust-cache@v2
+
       - name: Rustfmt
         run: cargo fmt --all
-      
+
       - name: Test
         run: cargo test
+
+  test-cpp-differential:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Compare Rust predicates with Geogram C++
+        run: cargo test --release --test cpp_differential -- --ignored
