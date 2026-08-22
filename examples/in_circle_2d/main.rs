@@ -1,4 +1,4 @@
-use geogram_predicates_local::{in_circle_2d_sos, SosPoint};
+use geogram_predicates::{in_circle_2d_sos, SosPoint};
 use std::{fs, path::Path};
 use test_utils::{next_after, predicate_2d_test, write_to_pgm};
 

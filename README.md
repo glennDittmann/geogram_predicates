@@ -7,7 +7,7 @@ No C++ or external crates are required.
 ## Example
 
 ```rust
-use geogram_predicates_local::{in_circle_2d_sos, orient_2d, Sign, SosPoint};
+use geogram_predicates::{in_circle_2d_sos, orient_2d, Sign, SosPoint};
 
 // 2D orientation (counter-clockwise = Positive)
 let a = [0.0, 0.0];

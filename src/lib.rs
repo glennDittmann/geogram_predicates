@@ -11,7 +11,7 @@
 //!
 //! ## Example
 //! ```ignore
-//! use geogram_predicates_local::{orient_2d, Sign};
+//! use geogram_predicates::{orient_2d, Sign};
 //!
 //! let a = [0.0, 0.0];
 //! let b = [2.0, 0.0];

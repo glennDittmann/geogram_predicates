@@ -3,7 +3,7 @@
 //! Run with:
 //! `cargo test --release --test cpp_differential -- --ignored --nocapture`
 
-use geogram_predicates_local as gp;
+use geogram_predicates as gp;
 use gp::SosPoint;
 use std::env;
 use std::ffi::OsString;

@@ -24,8 +24,8 @@ const EXPANSION_SPLITTER: f64 = 134_217_729.0;
 /// 1. Its components are ordered by magnitude, i.e. _x_n > ... > ... x_1_
 ///
 /// 2. Its components are non-overlapping, that means the least significant non-zero bit of some component _a_ is more
-/// significant than the most significant non-zero bit of some component _b_ (or vice versa) for all components of _x_.
-/// `0` does not overlap any number.
+///    significant than the most significant non-zero bit of some component _b_ (or vice versa) for all components of _x_.
+///    `0` does not overlap any number.
 ///
 /// ### Example Overlapping/non-Overlapping
 /// `1100` and `-10.1` (1) are non-overlapping, whereas `101` and `10` (2) are.

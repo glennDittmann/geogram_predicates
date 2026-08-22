@@ -3,7 +3,7 @@
 version = 3
 
 [[package]]
-name = "geogram_predicates_local"
+name = "geogram_predicates"
 version = "0.4.0"
 dependencies = [
  "test_utils",
